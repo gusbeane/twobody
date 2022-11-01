@@ -1,0 +1,15 @@
+# Project specific ignores
+twobody
+
+# Xilinx specific ignores
+*.log
+*.xo
+*.xclbin
+*.link_summary
+*.info
+*.compile_summary
+
+.Xil/
+.run/
+_x/
+emconfig.json

@@ -8,7 +8,10 @@ twobody
 *.link_summary
 *.info
 *.compile_summary
+*.jou
+*.ltx
 
+.ipcache/
 .Xil/
 .run/
 _x/

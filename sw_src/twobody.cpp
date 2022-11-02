@@ -217,6 +217,8 @@ int main(int argc, char *argv[])
                      NULL);
 
     et.finish();
+    
+    std::cout << "Xpoint 0" << std::endl;
 
     // Set vadd kernel arguments
     et.add("Set kernel arguments");
@@ -257,6 +259,7 @@ int main(int argc, char *argv[])
                                                  3 * sizeof(double));
     et.finish();
 
+    std::cout << "Xpoint 1" << std::endl;
     et.add("Populating buffer inputs");
     P0Pos_in[0] = P0Pos_in[1] = P0Pos_in[2] = 0.0;
     P0Vel_in[0] = P0Vel_in[1] = P0Vel_in[2] = 0.0;
@@ -295,11 +298,14 @@ int main(int argc, char *argv[])
     q.enqueueMigrateMemObjects({P0Pos_in_buf, P0Vel_in_buf, P1Pos_in_buf, P1Vel_in_buf}, 0, NULL, &event_sp);
     clWaitForEvents(1, (const cl_event *)&event_sp);
 
+    std::cout << "Xpoint 2" << std::endl;
     et.add("OCL Enqueue task");
 
     q.enqueueTask(krnl, NULL, &event_sp);
     et.add("Wait for kernel to complete");
     clWaitForEvents(1, (const cl_event *)&event_sp);
+
+    std::cout << "Xpoint 3" << std::endl;
 
     // Migrate memory back from device
     et.add("Read back computation results");
@@ -330,7 +336,7 @@ int main(int argc, char *argv[])
     // Verify the results
     bool verified = true;
     for (int i = 0; i < 3; i++) {
-        if (P1Pos_out_hw[i] != P1Pos_out_sw[i]) {
+        if (abs(P1Pos_out_hw[i] - P1Pos_out_sw[i]) > 1e-8) {
             verified = false;
             std::cout << "ERROR: software and hardware vadd do not match: "
                       << P1Pos_out_hw[i] << "!=" << P1Pos_out_sw[i] << " at position " << i << std::endl;
